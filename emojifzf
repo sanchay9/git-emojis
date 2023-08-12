@@ -1,0 +1,32 @@
+#!/bin/bash
+#
+# fuzzy find a emoji with live preview using mpv
+
+# create initial listening socket
+mpv --no-terminal \
+    --no-config \
+    --no-osc \
+    --no-input-default-bindings \
+    --no-input-cursor \
+    --no-keepaspect \
+    --no-border \
+    --no-window-dragging \
+    --keep-open \
+    --loop \
+    --geometry=-0-0 \
+    --autofit=400x300 \
+    --wayland-app-id="git-emojis" \
+    --input-ipc-server=/tmp/gitemoji \
+    init &
+
+emoji_dir=~/dev/git-emojis
+selected=$(fd -t f -e png -e gif | fzf --preview="echo loadfile {} | socat - /tmp/gitemoji")
+
+if [ -n "$selected" ]; then
+    github_link="https://raw.githubusercontent.com/sanchay9/git-emojis/main/$selected"
+    wl-copy "$github_link" >/dev/null 2>&1
+    notify-send -i "$(readlink -f $emoji_dir/"$selected")" "Copied to clipboard"
+fi
+
+# send quit to ipc socket
+echo '{"command": ["quit"]}' | socat - /tmp/gitemoji
