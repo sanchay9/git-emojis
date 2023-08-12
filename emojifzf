@@ -25,7 +25,7 @@ cd $emoji_dir || exit
 selected=$(fd -t f -e png -e gif . | fzf --preview="echo loadfile $(pwd)/{} | socat - /tmp/gitemoji")
 
 if [ -n "$selected" ]; then
-    github_link="https://raw.githubusercontent.com/sanchay9/git-emojis/main/$selected"
+    github_link="https://raw.githubusercontent.com/sanchay9/git-emojis/main/emojis/$selected"
     wl-copy "$github_link" >/dev/null 2>&1
     notify-send -i "$(readlink -f $emoji_dir/"$selected")" "Copied to clipboard"
 fi
