@@ -2,6 +2,8 @@
 #
 # fuzzy find a emoji with live preview using mpv
 
+emoji_dir=~/dev/git-emojis/emojis
+
 # create initial listening socket
 mpv --no-terminal \
     --no-config \
@@ -17,10 +19,10 @@ mpv --no-terminal \
     --autofit=400x300 \
     --wayland-app-id="git-emojis" \
     --input-ipc-server=/tmp/gitemoji \
-    init &
+    $emoji_dir/init &
 
-emoji_dir=~/dev/git-emojis/emojis
-selected=$(fd -t f -e png -e gif | fzf --preview="echo loadfile {} | socat - /tmp/gitemoji")
+cd $emoji_dir || exit
+selected=$(fd -t f -e png -e gif . | fzf --preview="echo loadfile $(pwd)/{} | socat - /tmp/gitemoji")
 
 if [ -n "$selected" ]; then
     github_link="https://raw.githubusercontent.com/sanchay9/git-emojis/main/$selected"
