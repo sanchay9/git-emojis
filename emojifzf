@@ -19,7 +19,7 @@ mpv --no-terminal \
     --input-ipc-server=/tmp/gitemoji \
     init &
 
-emoji_dir=~/dev/git-emojis
+emoji_dir=~/dev/git-emojis/emojis
 selected=$(fd -t f -e png -e gif | fzf --preview="echo loadfile {} | socat - /tmp/gitemoji")
 
 if [ -n "$selected" ]; then
